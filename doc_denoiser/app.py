@@ -17,8 +17,7 @@ from utils.visualization import show_comparison, show_before_after
 
 # ── Page Config ──────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="📄 Doc Denoiser",
-    page_icon="✨",
+    page_title="📄 Denoising Autoencoder",
     layout="wide",
 )
 
@@ -208,9 +207,7 @@ else:
         ---
 
         **Models available:**
-        - **Simple Autoencoder** — Fast, good for light noise. *Start here.*
+        - **Simple Autoencoder** — Fast, good for light noise.
         - **U-Net** — Stronger, better for heavy noise and complex documents.
-
-        **Need to train first?** See the README for training instructions.
         """
     )

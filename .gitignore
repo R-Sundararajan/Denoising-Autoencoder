@@ -25,3 +25,4 @@ Thumbs.db
 .idea/
 
 prompt.txt
+doc_denoiser\gpu_check.py
