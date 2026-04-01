@@ -1,0 +1,25 @@
+# Virtual environments
+venv/
+.env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Model weights / large files
+*.pt
+*.pth
+*.ckpt
+
+# Data and outputs
+data/
+outputs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
