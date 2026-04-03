@@ -3,6 +3,7 @@
 # Handles conversion between PIL images, numpy arrays, and PyTorch tensors.
 
 import numpy as np
+import cv2
 from PIL import Image
 import torch
 
@@ -77,17 +78,37 @@ def postprocess_output(tensor: torch.Tensor, original_size: tuple) -> Image.Imag
 
 def add_noise_to_pil(pil_image: Image.Image, noise_strength: float = 0.1) -> Image.Image:
     """
-    Add Gaussian noise to a PIL image (used in the Streamlit UI for preview).
+    Add random noise (Gaussian, blur, or both) to a PIL image based on a random integer.
 
     Args:
         pil_image: Input PIL image (grayscale).
-        noise_strength: Noise standard deviation.
+        noise_strength: Overall intensity of noise/blur.
 
     Returns:
         Noisy PIL image.
     """
     arr = np.array(pil_image, dtype=np.float32) / 255.0
-    noise = np.random.normal(0, noise_strength, arr.shape).astype(np.float32)
-    noisy = np.clip(arr + noise, 0.0, 1.0)
-    noisy_uint8 = (noisy * 255).astype(np.uint8)
+
+    # Generate a random integer from 0 to 2
+    # 0: Gaussian Noise
+    # 1: Gaussian Blur
+    # 2: Both
+    noise_type = np.random.randint(0, 3)
+
+    if noise_type == 0:
+        # Only Gaussian Noise
+        noise = np.random.normal(0, noise_strength, arr.shape).astype(np.float32)
+        arr = np.clip(arr + noise, 0.0, 1.0)
+    elif noise_type == 1:
+        # Only Gaussian Blur
+        kernel_size = max(1, int(noise_strength * 20)) * 2 + 1
+        arr = cv2.GaussianBlur(arr, (kernel_size, kernel_size), 0)
+    else:
+        # Both
+        noise = np.random.normal(0, noise_strength, arr.shape).astype(np.float32)
+        arr = np.clip(arr + noise, 0.0, 1.0)
+        kernel_size = max(1, int(noise_strength * 10)) * 2 + 1
+        arr = cv2.GaussianBlur(arr, (kernel_size, kernel_size), 0)
+
+    noisy_uint8 = (np.clip(arr, 0.0, 1.0) * 255).astype(np.uint8)
     return Image.fromarray(noisy_uint8, mode="L")
